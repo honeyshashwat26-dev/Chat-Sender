@@ -5,77 +5,162 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Send Message</title>
   <style>
+    :root {
+      --primary: #0088cc;
+      --primary-hover: #006699;
+      --bg-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      --card-bg: #ffffff;
+      --text-color: #333333;
+      --subtext-color: #666666;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
     body {
-      font-family: Arial, sans-serif;
       display: flex;
+      flex-direction: column;
       justify-content: center;
       align-items: center;
       min-height: 100vh;
-      background-color: #f4f4f9;
-      margin: 0;
+      background: var(--bg-gradient);
+      padding: 20px;
     }
-    .card {
-      background: white;
-      padding: 24px;
-      border-radius: 8px;
-      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+
+    .container {
       width: 100%;
-      max-width: 400px;
+      max-width: 420px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
+
+    .card {
+      background: var(--card-bg);
+      padding: 32px 28px;
+      border-radius: 16px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+      width: 100%;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
+    }
+
+    .card h2 {
+      color: var(--text-color);
+      font-size: 24px;
+      margin-bottom: 8px;
+      text-align: center;
+    }
+
+    .card p {
+      color: var(--subtext-color);
+      font-size: 14px;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
     textarea {
       width: 100%;
-      height: 100px;
-      padding: 10px;
-      box-sizing: border-box;
-      margin-bottom: 12px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      resize: vertical;
+      height: 120px;
+      padding: 14px;
+      border: 2px solid #e1e5ee;
+      border-radius: 10px;
+      font-size: 15px;
+      color: var(--text-color);
+      resize: none;
+      outline: none;
+      transition: border-color 0.3s ease;
     }
+
+    textarea:focus {
+      border-color: var(--primary);
+    }
+
     button {
       width: 100%;
-      padding: 10px;
-      background-color: #0088cc;
+      padding: 14px;
+      margin-top: 16px;
+      background-color: var(--primary);
       color: white;
       border: none;
-      border-radius: 4px;
-      cursor: pointer;
+      border-radius: 10px;
       font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(0, 136, 204, 0.3);
+      transition: background-color 0.2s ease, transform 0.1s ease;
     }
+
     button:hover {
-      background-color: #006699;
+      background-color: var(--primary-hover);
     }
+
+    button:active {
+      transform: scale(0.98);
+    }
+
     #status {
-      margin-top: 10px;
+      margin-top: 14px;
       text-align: center;
       font-size: 14px;
+      font-weight: 500;
+      min-height: 20px;
+    }
+
+    footer {
+      margin-top: 24px;
+      color: rgba(255, 255, 255, 0.8);
+      font-size: 13px;
+      text-align: center;
+      letter-spacing: 0.5px;
     }
   </style>
 </head>
 <body>
 
-  <div class="card">
-    <h2>Send a Message</h2>
-    <textarea id="messageInput" placeholder="Type your message here..."></textarea>
-    <button onclick="sendMessage()">Send Message</button>
-    <div id="status"></div>
+  <div class="container">
+    <div class="card">
+      <h2>Send a Message</h2>
+      <p>Your message will be logged and sent directly.</p>
+      
+      <textarea id="messageInput" placeholder="Write your message here..."></textarea>
+      <button onclick="sendMessage()">Send Message</button>
+      
+      <div id="status"></div>
+    </div>
+
+    <footer>
+      &copy; <span id="year"></span> Made with ❤️ By <a href="https://www.github.com/honeyshashwat26-dev/" target="_blank" rel="noopener noreferrer">Honey</a>. All Rights Reserved.
+    </footer>
   </div>
 
   <script>
     // Paste your Google Web App URL below
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyk5VkFk41bqcdKHcn8QmXmkIsWMCkARzR2h5pFKwwjGd2PNy90DoT375BESDT1W91rXw/exec";
 
+    // Set dynamic copyright year automatically
+    document.getElementById("year").textContent = new Date().getFullYear();
+
     async function sendMessage() {
-      const messageText = document.getElementById("messageInput").value.trim();
+      const messageInput = document.getElementById("messageInput");
+      const messageText = messageInput.value.trim();
       const statusDiv = document.getElementById("status");
 
       if (!messageText) {
-        statusDiv.style.color = "red";
+        statusDiv.style.color = "#e74c3c";
         statusDiv.innerText = "Please enter a message.";
         return;
       }
 
-      statusDiv.style.color = "black";
+      statusDiv.style.color = "#555555";
       statusDiv.innerText = "Sending...";
 
       try {
@@ -86,11 +171,11 @@
           body: JSON.stringify({ message: messageText })
         });
 
-        statusDiv.style.color = "green";
+        statusDiv.style.color = "#2ecc71";
         statusDiv.innerText = "Message sent successfully!";
-        document.getElementById("messageInput").value = "";
+        messageInput.value = "";
       } catch (err) {
-        statusDiv.style.color = "red";
+        statusDiv.style.color = "#e74c3c";
         statusDiv.innerText = "Failed to send message.";
       }
     }
